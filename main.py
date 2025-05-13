@@ -167,7 +167,8 @@ if page_select != 'Home':
   )
   
 if page_select == 'Home':
-  st.title('Investigating Intersections of Technology and Industrialization')
+    st.title('Investigating Intersections of Technology and Industrialization')
+    st.write("In the last two centuries, many of the world's nations have been transformed by the industrial revolution and the invention of digital technologies. This dashboard allows one to explore the development of countries individually and track these changes over time.")
 elif page_select == 'CO2 Emissions': 
     st.title("CO2 Emissions (tonnes per Capita)")
     year_placeholder = st.empty()
