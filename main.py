@@ -168,15 +168,15 @@ if page_select != 'Home':
   
 if page_select == 'Home':
   st.title('Investigating Intersections of Technology and Industrialization')
-elif page_select == 'RQ1': 
-    st.title("RQ1")
+elif page_select == 'CO2 Emission Map': 
+    st.title("CO2 Emissions (tonnes per Capita)")
     year_placeholder = st.empty()
     map_placeholder = st.empty()
     year_select = st.slider(
     'Select a year',
-    min_value=1950,
-    max_value=2025,
-    value = 2000,
+    min_value=1800,
+    max_value=2022,
+    value = 1800,
     step=1
     )
     co2_year = co2[co2['year']==year_select]
