@@ -156,7 +156,7 @@ if 'animToggle' not in st.session_state: #avoids any animation related errors
 animToggle = st.toggle("Toggle Animation?", value=False)
 
 st.sidebar.title('Navigation')
-page_select = st.sidebar.selectbox('Select a page:', ['Home', 'RQ1', 'RQ2', 'RQ3', 'RQ4', 'RQ5', 'RQ6'])
+page_select = st.sidebar.selectbox('Select a page:', ['Home', 'CO2 Emissions', 'GDP and Tech', 'Cellphone Usage and Education', 'Crime', 'Correlation', 'Energy Consumption'])
 
 if page_select != 'Home':
   options = ['All Countries'] + list(df_country)
@@ -168,7 +168,7 @@ if page_select != 'Home':
   
 if page_select == 'Home':
   st.title('Investigating Intersections of Technology and Industrialization')
-elif page_select == 'CO2 Emission Map': 
+elif page_select == 'CO2 Emissions': 
     st.title("CO2 Emissions (tonnes per Capita)")
     year_placeholder = st.empty()
     map_placeholder = st.empty()
@@ -212,7 +212,7 @@ elif page_select == 'CO2 Emission Map':
     with map_placeholder: 
         _ = st_folium(choromap, width=700, height=500, returned_objects=[])
         
-elif page_select == 'RQ2': 
+elif page_select == 'GDP and Tech': 
   st.title("RQ2: Does a country’s GDP relate to the country’s usage of technology?")
   usage = internet_usage_pct.copy()
   currGDP = gdp.copy()
@@ -491,7 +491,7 @@ elif page_select == 'RQ2':
     st.plotly_chart(fig, key=key)
     st.write("This graph seeks to illustrate how GDP and Internet Usage (by percentage) relate over time by reversing the axis and with respect to population size in order to investigate any potential relationships.")
 
-elif page_select == 'RQ3':
+elif page_select == 'Cellphone Usage and Education':
   st.title("RQ3: Does a country's cellphone usage relate to its education outcomes?")
   currYear = int(st.session_state.timeslider)
   tab0, tab1 = st.tabs(["Selected Scatterplot", "General Scatterplot"])
@@ -596,11 +596,11 @@ elif page_select == 'RQ3':
       st.pyplot(fig)
     st.write("This graph illustrates the development of the relationship between mean years of schooling for men 25 or older across the globe and cellphone usage, over time.")
 
-elif page_select == 'RQ4':
+elif page_select == 'Crime':
   st.title("RQ4: TODO crime rates")
-elif page_select == 'RQ5':
+elif page_select == 'Correlation':
   st.title("RQ5: Correlation Matrix")
-elif page_select == 'RQ6':
+elif page_select == 'Energy Consumption':
 
   country_select = False
   #Line Plot of Energy Consumption
@@ -634,7 +634,7 @@ elif page_select == 'RQ6':
 
 
 
-if page_select in ['RQ1', 'RQ2', 'RQ3']:
+if page_select in ['GDP and Tech', 'Cellphone Usage and Education']:
   st.slider(
         'Select a year',
         min_value=min_year,
