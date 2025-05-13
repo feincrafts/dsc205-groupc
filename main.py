@@ -156,7 +156,7 @@ if 'animToggle' not in st.session_state: #avoids any animation related errors
 animToggle = st.toggle("Toggle Animation?", value=False)
 
 st.sidebar.title('Navigation')
-page_select = st.sidebar.selectbox('Select a page:', ['Home', 'CO2 Emissions', 'GDP and Tech', 'Cellphone Usage and Education', 'Crime', 'Correlation', 'Energy Consumption'])
+page_select = st.sidebar.selectbox('Select a page:', ['Home', 'CO2 Emissions', 'GDP and Tech', 'Cellphone Usage and Education', 'Correlation', 'Energy Consumption'])
 
 if page_select != 'Home':
   options = ['All Countries'] + list(df_country)
@@ -596,8 +596,6 @@ elif page_select == 'Cellphone Usage and Education':
       st.pyplot(fig)
     st.write("This graph illustrates the development of the relationship between mean years of schooling for men 25 or older across the globe and cellphone usage, over time.")
 
-elif page_select == 'Crime':
-  st.title("RQ4: TODO crime rates")
 elif page_select == 'Correlation':
   st.title("RQ5: Correlation Matrix")
 elif page_select == 'Energy Consumption':
