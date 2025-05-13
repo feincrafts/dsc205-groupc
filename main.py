@@ -611,7 +611,7 @@ elif page_select == 'RQ6':
   merged['energy_use'] = merged['energy_use'].apply(convert_count)
 
   #Setting the year cutoff
-  megred = merged[merged['year'] >=1990]
+  merged = merged[merged['year'] >=1990]
 
   #Scaling data
   scaler = StandardScaler()
@@ -619,9 +619,10 @@ elif page_select == 'RQ6':
   merged['percentage'] = scaler.fit_transform(merged[['percentage']])
   x = merged['year']
   fig, ax = plt.subplots(figsize= (10,6))
-  sns.lineplot(data=merged,y="percentage", x="year", color='blue', ax=ax)
-  sns.lineplot(data=merged,y="energy_use", x="year", color='orange', ax= ax)
-  ax.legend("Internet Users", "Energy Consumption")
+  sns.lineplot(data=merged,y="percentage", x="year", color='blue', ax=ax, label="Internet Users")
+  sns.lineplot(data=merged,y="energy_use", x="year", color='orange', ax= ax, label="Energy Consumption")
+  ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+  ax.set_title('Percentage of Internet Users and Energy Consumption vs Time' + str(currYear))
   ax.set_xlabel('Year (1990-2023)')
   ax.set_ylabel('Percentage')
   st.write("This Lineplot shows the increase in both energy usage and the percentage of Internet users over time." \
