@@ -90,6 +90,24 @@ world = gpd.GeoDataFrame(
 )
 internet_usage_pct = pd.read_csv("./datasets/internet_users.csv") #percent of population
 gdp = pd.read_csv("./datasets/gdp_pcap.csv")
+pop = pd.read_csv("./datasets/pop.csv")
+
+def convert_count(value):
+  if isinstance(value, float):
+    pass
+  elif value[-1] == 'µ':
+    return float(value[:-1]) * .000001
+  elif value[-1].upper() == 'B':
+    return float(value[:-1]) * 1000000000
+  elif value[-1].upper() == 'M':
+    return float(value[:-1]) * 1000000
+  elif value[-1].upper() == 'K':
+    return float(value[:-1]) * 1000
+  else:
+    return float(value)
+  
+#need to convert the values
+pop.update(pop.drop(columns='country').map(convert_count))
 
 cellphones = pd.read_csv('./datasets/cell_phones_per_100_people.csv')
 cellphones = cellphones.melt(id_vars=['country'],
@@ -203,9 +221,66 @@ elif page_select == 'RQ2':
 
   currYear = st.session_state.timeslider
 
-  tab1, tab2, tab3 = st.tabs(["Scatterplot", "TBD1", "TBD2"])
+  tab0, tab1, tab2 = st.tabs(["Selected Scatterplot", "General Scatterplot", "Population Scatterplot"])
+  with tab0:
+   
+    currYear = str(2017)
+
+    usageYear = usage[['country', currYear]].rename(columns={currYear: 'usage'})
+    gdpYear = gdp[['country', currYear]].rename(columns={currYear: 'gdp'})
+    mergedDF = pd.merge(usageYear, gdpYear, on='country')
+    mergedDF = mergedDF.dropna()
+
+    min_year = int(usage.columns[1])
+    max_year = int(usage.columns[-1])
+
+    countrylist = country_select.copy()
+    if len(countrylist) == 1 and ('All Countries' in countrylist):
+      fig = px.scatter(mergedDF, x='usage', y='gdp', hover_name='country', title = "Internet Usage by GDP per country in Year " + str(currYear))
+    else:
+      allCountry = False
+      if ('All Countries' in countrylist and len(countrylist) > 1):
+        countrylist.remove('All Countries')
+        allCountry = True
+
+      highlight = mergedDF[mergedDF['country'].isin(country_select)]
+      others = mergedDF[~mergedDF['country'].isin(country_select)]
+
+      trace1 = go.Scatter(
+          x=highlight['usage'],
+          y=highlight['gdp'],
+          mode='markers',
+          marker=dict(color='orange'),
+          name='Highlighted',
+          text=highlight['country'],
+          hoverinfo='text+x+y'
+      )
+
+      if allCountry:
+        trace2 = go.Scatter(
+            x=others['usage'],
+            y=others['gdp'],
+            mode='markers',
+            name='Others',
+            text=others['country'],
+            hoverinfo='text+x+y',
+            opacity = 0.4
+        )
+
+        fig = go.Figure(data=[trace2, trace1])
+      else:
+        fig = go.Figure(data=[trace1])
+
+      fig.update_layout(
+          title="Internet Usage by GDP per country in Year " + str(currYear),
+          xaxis_title='Internet Usage',
+          yaxis_title='GDP'
+      )
+    st.plotly_chart(fig, y='gdp')
+
   with tab1:
-    if animToggle:
+    selected_tab = "General Scatterplot"
+    if animToggle and selected_tab == "General Scatterplot":
       fig_goes_here = st.empty()
       while animToggle:
         if int(currYear) < int(max_year):
@@ -271,6 +346,9 @@ elif page_select == 'RQ2':
       mergedDF = pd.merge(usageYear, gdpYear, on='country')
       mergedDF = mergedDF.dropna()
 
+      min_year = int(usage.columns[1])
+      max_year = int(usage.columns[-1])
+
       countrylist = country_select.copy()
       if len(countrylist) == 1 and ('All Countries' in countrylist):
         fig = px.scatter(mergedDF, x='usage', y='gdp', hover_name='country', title = "Internet Usage by GDP per country in Year " + str(currYear))
@@ -314,10 +392,125 @@ elif page_select == 'RQ2':
             yaxis_title='GDP'
         )
       st.plotly_chart(fig, y='gdp')
+
+  with tab2:
+    #added selected tab for performance reasons but not sure if it works
+    selected_tab = "Population Scatterplot"
+    st.write("Due to Streamlit limitations, animation does not work on this page ")
+    # I don't know why, but animToggle does not work with this plot, even if it's on tab1
+    # and sometimes even with no plots at all
+    # baffled and confused
+    if animToggle and selected_tab == "Population Scatterplot":
+      pass
+
+    else:
+      currYear = str(st.session_state.timeslider)
+
+      #technically added it but it doesn't help much
+      #min_year = int(usage.columns[1])
+      #max_year = int(usage.columns[-1])
+
+      #dataset initialization
+      usageYear = usage[['country', currYear]].rename(columns={currYear: 'usage'})
+      gdpYear = gdp[['country', currYear]].rename(columns={currYear: 'gdp'})
+      mergedDF = pd.merge(usageYear, gdpYear, on='country')
+      popYear = pop[['country', currYear]].rename(columns={currYear: 'pop'})
+      merged_currYear = pd.merge(mergedDF, popYear, on=['country'], how='inner')
+      merged_currYear["pop"] = pd.to_numeric(merged_currYear["pop"]) #error handling
+      merged_currYear.dropna()
+
+      countrylist = country_select.copy()
+      if len(countrylist) == 1 and ('All Countries' in countrylist):
+        fig = px.scatter(merged_currYear, x="gdp", y="usage", size="pop",
+          hover_name="country", log_x = True, title = "GDP vs Usage for Year " + str(currYear), size_max=60)
+      else:
+        allCountry = False
+        if ('All Countries' in countrylist and len(countrylist) > 1):
+          countrylist.remove('All Countries')
+          allCountry = True
+
+        highlight = merged_currYear[merged_currYear['country'].isin(country_select)]
+        others = merged_currYear[~merged_currYear['country'].isin(country_select)]
+        sizeref = 2. * max(merged_currYear["pop"]) / (60. ** 2)
+
+        trace1 = go.Scatter(
+            x=highlight['gdp'],
+            y=highlight['usage'],
+            mode='markers',
+            marker=dict(
+                size=highlight['pop'],
+                sizemode='area',  
+                sizeref=sizeref,
+                sizemin=4,
+                color = 'orange'
+            ),
+            name='Highlighted',
+            text=highlight['country'],
+            hoverinfo='text+x+y'
+        )
+
+        if allCountry:
+          trace2 = go.Scatter(
+              x=others['gdp'],
+              y=others['usage'],
+              mode='markers',
+              marker=dict(
+                  size=others['pop'], 
+                  sizemode='area',   
+                  sizeref=sizeref,
+                  sizemin=4      
+              ),
+              name='Others',
+              text=others['country'],
+              hoverinfo='text+x+y',
+              opacity = 0.4
+          )
+
+          fig = go.Figure(data=[trace2, trace1])
+        else:
+          fig = go.Figure(data=[trace1])
+
+        fig.update_layout(
+            title="Internet Usage by GDP per country in Year " + str(currYear),
+            xaxis_title='GDP',
+            yaxis_title='Internet Usage'
+        )
+
+      st.plotly_chart(fig)
+
 elif page_select == 'RQ3':
   st.title("RQ3: Does a country's cellphone usage relate to its education outcomes?")
   currYear = int(st.session_state.timeslider)
-  tab1, tab2, tab3 = st.tabs(["Scatterplot", "TBD1", "TBD2"])
+  tab0, tab1 = st.tabs(["Selected Scatterplot", "General Scatterplot"])
+
+  with tab0:
+    currYear = 2006
+    merged_df = pd.merge(cellphones, education, on=['country', 'year'], how='inner')
+    merged_df = merged_df.dropna()
+    #recoded a bit because it wasn't showing up in the animation
+    current_year_df = merged_df[merged_df['year'] == int(currYear)]
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.set_title('Years of Schooling vs. Cellphones per 100k for year ' + str(currYear))
+    ax.set_xlabel('Years of Schooling')
+    ax.set_ylabel('Cellphones per 100k')
+
+    #country_select
+    countrylist = country_select.copy()
+    if len(countrylist) == 1 and ('All Countries' in countrylist):
+      ax.scatter(x=current_year_df['years_of_schooling'], y=current_year_df['cellphones_per_100k'])
+    else:
+
+      if ('All Countries' in countrylist and len(countrylist) > 1):
+        countrylist.remove('All Countries')
+
+      highlight = current_year_df[current_year_df['country'].isin(country_select)]
+      others = current_year_df[~current_year_df['country'].isin(country_select)]
+
+      ax.scatter(x=others['years_of_schooling'], y=others['cellphones_per_100k'], alpha=0.4)
+      ax.scatter(x=highlight['years_of_schooling'], y=highlight['cellphones_per_100k'], color='orange', s=75)
+
+    st.pyplot(fig)
 
   with tab1:
     if animToggle:
@@ -351,14 +544,7 @@ elif page_select == 'RQ3':
           others = current_year_df[~current_year_df['country'].isin(country_select)]
 
           ax.scatter(x=others['years_of_schooling'], y=others['cellphones_per_100k'])
-          ax.scatter(x=highlight['years_of_schooling'], y=highlight['cellphones_per_100k'], color='orange')
-
-        #trying to recreate the bestfit from seaborn regplot
-        #TODO - debug line of best fit for errors
-        #slope, intercept = np.polyfit(current_year_df['years_of_schooling'], current_year_df['cellphones_per_100k'], 1)
-        #line = slope * current_year_df['years_of_schooling'] + intercept
-        #ax.plot(current_year_df['years_of_schooling'], line, color='#1f77b4', label='Best Fit Line')
-        #TODO shader thing that regplot has
+          ax.scatter(x=highlight['years_of_schooling'], y=highlight['cellphones_per_100k'], color='orange', s=75)
 
         fig_goes_here.pyplot(fig) # hope this works
         plt.close(fig)
@@ -366,6 +552,7 @@ elif page_select == 'RQ3':
 
     else:
       currYear = int(st.session_state.timeslider)
+      max_year = 2009
       merged_df = pd.merge(cellphones, education, on=['country', 'year'], how='inner')
       merged_df = merged_df.dropna()
       #recoded a bit because it wasn't showing up in the animation
@@ -375,7 +562,6 @@ elif page_select == 'RQ3':
       ax.set_title('Years of Schooling vs. Cellphones per 100k for year ' + str(currYear))
       ax.set_xlabel('Years of Schooling')
       ax.set_ylabel('Cellphones per 100k')
-
 
       #country_select
       countrylist = country_select.copy()
@@ -390,7 +576,7 @@ elif page_select == 'RQ3':
         others = current_year_df[~current_year_df['country'].isin(country_select)]
 
         ax.scatter(x=others['years_of_schooling'], y=others['cellphones_per_100k'], alpha=0.4)
-        ax.scatter(x=highlight['years_of_schooling'], y=highlight['cellphones_per_100k'], color='orange')
+        ax.scatter(x=highlight['years_of_schooling'], y=highlight['cellphones_per_100k'], color='orange', s=75)
 
       st.pyplot(fig)
 
