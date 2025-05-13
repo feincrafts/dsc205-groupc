@@ -8,3 +8,5 @@ streamlit_folium
 seaborn
 shapely
 geopandas
+scikit-learn
+
