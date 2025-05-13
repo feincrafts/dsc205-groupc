@@ -507,8 +507,9 @@ elif page_select == 'RQ3':
       highlight = current_year_df[current_year_df['country'].isin(country_select)]
       others = current_year_df[~current_year_df['country'].isin(country_select)]
 
-      ax.scatter(x=others['years_of_schooling'], y=others['cellphones_per_100k'], alpha=0.4)
-      ax.scatter(x=highlight['years_of_schooling'], y=highlight['cellphones_per_100k'], color='orange', s=75)
+      ax.scatter(x=others['years_of_schooling'], y=others['cellphones_per_100k'], alpha=0.4, label='Other country/countries')
+      ax.scatter(x=highlight['years_of_schooling'], y=highlight['cellphones_per_100k'], color='orange', s=75, label='Selected country/countries')
+      ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
     st.pyplot(fig)
 
@@ -543,9 +544,9 @@ elif page_select == 'RQ3':
           highlight = current_year_df[current_year_df['country'].isin(country_select)]
           others = current_year_df[~current_year_df['country'].isin(country_select)]
 
-          ax.scatter(x=others['years_of_schooling'], y=others['cellphones_per_100k'])
-          ax.scatter(x=highlight['years_of_schooling'], y=highlight['cellphones_per_100k'], color='orange', s=75)
-
+          ax.scatter(x=others['years_of_schooling'], y=others['cellphones_per_100k'], label='Other country/countries')
+          ax.scatter(x=highlight['years_of_schooling'], y=highlight['cellphones_per_100k'], color='orange', s=75, label='Selected country/countries')
+          ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
         fig_goes_here.pyplot(fig) # hope this works
         plt.close(fig)
         time.sleep(0.45) 
@@ -575,9 +576,9 @@ elif page_select == 'RQ3':
         highlight = current_year_df[current_year_df['country'].isin(country_select)]
         others = current_year_df[~current_year_df['country'].isin(country_select)]
 
-        ax.scatter(x=others['years_of_schooling'], y=others['cellphones_per_100k'], alpha=0.4)
-        ax.scatter(x=highlight['years_of_schooling'], y=highlight['cellphones_per_100k'], color='orange', s=75)
-
+        ax.scatter(x=others['years_of_schooling'], y=others['cellphones_per_100k'], alpha=0.4, label='Other country/countries')
+        ax.scatter(x=highlight['years_of_schooling'], y=highlight['cellphones_per_100k'], color='orange', s=75, label='Selected country/countries')
+        ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
       st.pyplot(fig)
 
 elif page_select == 'RQ4':
