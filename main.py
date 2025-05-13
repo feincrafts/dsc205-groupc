@@ -128,7 +128,7 @@ if 'animToggle' not in st.session_state: #avoids any animation related errors
     st.session_state.animToggle = True 
 #note: I don't know why the timeslider doesn't show up for the animation, maybe because too fast to render? - Kaye
 
-animToggle = st.toggle("Toggle Animation?", value=True)
+animToggle = st.toggle("Toggle Animation?", value=False)
 
 st.sidebar.title('Navigation')
 page_select = st.sidebar.selectbox('Select a page:', ['Home', 'RQ1', 'RQ2', 'RQ3', 'RQ4', 'RQ5'])
@@ -188,7 +188,7 @@ elif page_select == 'RQ1':
         _ = st_folium(choromap, width=700, height=500, returned_objects=[])
         
 elif page_select == 'RQ2': 
-  st.title("RQ2: Insert Plotly Express Graph")
+  st.title("RQ2: Does a country’s GDP relate to the country’s usage of technology?")
   usage = internet_usage_pct.copy()
   currGDP = gdp.copy()
 
@@ -315,7 +315,7 @@ elif page_select == 'RQ2':
         )
       st.plotly_chart(fig, y='gdp')
 elif page_select == 'RQ3':
-  st.title("RQ3: Does a country’s GDP relate to the country’s Internet Usage")
+  st.title("RQ3: Does a country's cellphone usage relate to its education outcomes?")
   currYear = int(st.session_state.timeslider)
   tab1, tab2, tab3 = st.tabs(["Scatterplot", "TBD1", "TBD2"])
 
@@ -395,7 +395,7 @@ elif page_select == 'RQ3':
       st.pyplot(fig)
 
 elif page_select == 'RQ4':
-  st.title("RQ4: Does a country's cellphone usage relate to its education outcomes?")
+  st.title("RQ4: TODO crime rates")
 elif page_select == 'RQ5':
   st.title("RQ5: Correlation Matrix")
 elif page_select == 'RQ6':
