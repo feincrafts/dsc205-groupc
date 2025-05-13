@@ -632,7 +632,7 @@ elif page_select == 'Energy Consumption':
 
 
 
-if page_select in ['GDP and Tech', 'Cellphone Usage and Education']:
+if page_select in ['CO2 Emissions', 'GDP and Tech', 'Cellphone Usage and Education']:
   st.slider(
         'Select a year',
         min_value=min_year,
