@@ -283,7 +283,8 @@ elif page_select == 'RQ2':
           xaxis_title='Internet Usage (by percent)',
           yaxis_title='GDP'
       )
-    st.plotly_chart(fig, y='gdp')
+    key = time.time() #unique key
+    st.plotly_chart(fig, y='gdp', key=key)
     st.write("This graph seeks to illustrate the start of the shift from a logarithmic to a linear relationship of the variables over time, perhaps as the digital divide narrows.")
 
   with tab1:
@@ -399,7 +400,8 @@ elif page_select == 'RQ2':
             xaxis_title='Internet Usage',
             yaxis_title='GDP'
         )
-      st.plotly_chart(fig, y='gdp')
+    key = time.time() #unique key
+    st.plotly_chart(fig, y='gdp', key=key)
     st.write("This graph seeks to illustrate the development of a relationship between the variables over time. This animation shows that the relationship of the percentage of internet usage compared to gdp appears to develop from almost logarithmic to linear (at around year 2010).")
 
   with tab2:
@@ -485,7 +487,8 @@ elif page_select == 'RQ2':
             yaxis_title='Internet Usage'
         )
 
-      st.plotly_chart(fig)
+    key = time.time() #unique key
+    st.plotly_chart(fig, key=key)
     st.write("This graph seeks to illustrate how GDP and Internet Usage (by percentage) relate over time by reversing the axis and with respect to population size in order to investigate any potential relationships.")
 
 elif page_select == 'RQ3':
@@ -622,7 +625,7 @@ elif page_select == 'RQ6':
   sns.lineplot(data=merged,y="percentage", x="year", color='blue', ax=ax, label="Internet Users")
   sns.lineplot(data=merged,y="energy_use", x="year", color='orange', ax= ax, label="Energy Consumption")
   ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-  ax.set_title('Percentage of Internet Users and Energy Consumption vs Time' + str(currYear))
+  ax.set_title('Percentage of Internet Users and Energy Consumption vs Time')
   ax.set_xlabel('Year (1990-2023)')
   ax.set_ylabel('Percentage')
   st.write("This Lineplot shows the increase in both energy usage and the percentage of Internet users over time." \
@@ -631,7 +634,7 @@ elif page_select == 'RQ6':
 
 
 
-if page_select in ['RQ2', 'RQ3']:
+if page_select in ['RQ1', 'RQ2', 'RQ3']:
   st.slider(
         'Select a year',
         min_value=min_year,
