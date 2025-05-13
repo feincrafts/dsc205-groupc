@@ -1,4 +1,5 @@
-#Kaye local working copy as of 2:01am 
+# Kaye local working copy as of 1:18pm
+
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -13,7 +14,8 @@ import geopandas as gpd
 import os
 from shapely.geometry import Polygon, MultiPolygon
 import branca
-        
+from sklearn.preprocessing import StandardScaler
+
 #Helper function to remove glitchy parts of country shape files
 def keep_large_parts(gdf, area_km2=100):
     """
@@ -137,6 +139,13 @@ co2 = co2.melt(id_vars=['country'], var_name='year', value_name='co2_emission_pe
 co2['year'] = co2['year'].astype(int)
 co2['co2_emission_per_cap'] = co2['co2_emission_per_cap'].replace('−', '-', regex=True).astype(float)
 
+#importing energy dataset
+energy = pd.read_csv("./datasets/eg_use_elec_kh_pc.csv")
+energy = energy.melt(id_vars=['country'], var_name="year", value_name="energy_use")
+energy['year'] = energy['year'].astype(int)
+
+
+
 #defaults 
 min_year = 1990
 max_year = 2020
@@ -149,7 +158,7 @@ if 'animToggle' not in st.session_state: #avoids any animation related errors
 animToggle = st.toggle("Toggle Animation?", value=False)
 
 st.sidebar.title('Navigation')
-page_select = st.sidebar.selectbox('Select a page:', ['Home', 'RQ1', 'RQ2', 'RQ3', 'RQ4', 'RQ5'])
+page_select = st.sidebar.selectbox('Select a page:', ['Home', 'RQ1', 'RQ2', 'RQ3', 'RQ4', 'RQ5', 'RQ6'])
 
 if page_select != 'Home':
   options = ['All Countries'] + list(df_country)
@@ -591,7 +600,38 @@ elif page_select == 'RQ4':
 elif page_select == 'RQ5':
   st.title("RQ5: Correlation Matrix")
 elif page_select == 'RQ6':
-  st.title("RQ6: Erik's graph(s)")
+
+  country_select = False
+  #Line Plot of Energy Consumption
+  st.title("RQ6: Does the percentage of Internet users affect the average power consumption?")
+  #Merging data
+  internet_usage_pct = internet_usage_pct.melt(id_vars=['country'], var_name='year', value_name="percentage")
+  internet_usage_pct['year']= internet_usage_pct['year'].astype(int)
+  merged = energy.merge(internet_usage_pct, on=['country', 'year'])
+
+  #converting values
+  merged['energy_use'] = merged['energy_use'].apply(convert_count)
+
+  #Setting the year cutoff
+  merged = merged[merged['year'] >=1990]
+
+  #Scaling data
+  scaler = StandardScaler()
+  merged['energy_use'] = scaler.fit_transform(merged[['energy_use']])
+  merged['percentage'] = scaler.fit_transform(merged[['percentage']])
+  x = merged['year']
+  fig, ax = plt.subplots(figsize= (10,6))
+  sns.lineplot(data=merged,y="percentage", x="year", color='blue', ax=ax, label="Internet Users")
+  sns.lineplot(data=merged,y="energy_use", x="year", color='orange', ax= ax, label="Energy Consumption")
+  ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+  ax.set_title('Percentage of Internet Users and Energy Consumption vs Time' + str(currYear))
+  ax.set_xlabel('Year (1990-2023)')
+  ax.set_ylabel('Percentage')
+  st.write("This Lineplot shows the increase in both energy usage and the percentage of Internet users over time." \
+  " A key takeaway is that shortly after 2020, there is a spike in both energy usage and internet usage. This can most likely be attributed to the pandemic and the introduction of AI.")
+  st.pyplot(fig)
+
+
 
 if page_select in ['RQ2', 'RQ3']:
   st.slider(
