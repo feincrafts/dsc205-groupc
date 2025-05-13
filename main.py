@@ -598,6 +598,8 @@ elif page_select == 'Cellphone Usage and Education':
 
 elif page_select == 'Correlation':
   st.title("RQ5: Correlation Matrix")
+  st.image("./CorrMatrix.png")
+  st.write("This image illustrates the potential correlation between various factors on each other.")
 elif page_select == 'Energy Consumption':
 
   country_select = False
