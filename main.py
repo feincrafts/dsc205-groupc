@@ -272,11 +272,11 @@ elif page_select == 'RQ2':
 
       fig.update_layout(
           title="Internet Usage by GDP per country in Year " + str(currYear),
-          xaxis_title='Internet Usage',
+          xaxis_title='Internet Usage (by percent)',
           yaxis_title='GDP'
       )
     st.plotly_chart(fig, y='gdp')
-    st.write("This graph seeks to illustrate the start of the shift from a logarithmic to a linear relationship over time, perhaps as the digital divide narrows.")
+    st.write("This graph seeks to illustrate the start of the shift from a logarithmic to a linear relationship of the variables over time, perhaps as the digital divide narrows.")
 
   with tab1:
     selected_tab = "General Scatterplot"
@@ -392,7 +392,7 @@ elif page_select == 'RQ2':
             yaxis_title='GDP'
         )
       st.plotly_chart(fig, y='gdp')
-    st.write("This graph seeks to illustrate the development of a relationship over time. This animation shows that the relationship appears to develop from almost logarithmic to linear (at around year 2010).")
+    st.write("This graph seeks to illustrate the development of a relationship between the variables over time. This animation shows that the relationship of the percentage of internet usage compared to gdp appears to develop from almost logarithmic to linear (at around year 2010).")
 
   with tab2:
     #added selected tab for performance reasons but not sure if it works
@@ -478,7 +478,7 @@ elif page_select == 'RQ2':
         )
 
       st.plotly_chart(fig)
-    st.write("This graph seeks to illustrate how GDP and Internet Usage relate over time by reversing the axis and with respect to population size in order to investigate any potential relationships.")
+    st.write("This graph seeks to illustrate how GDP and Internet Usage (by percentage) relate over time by reversing the axis and with respect to population size in order to investigate any potential relationships.")
 
 elif page_select == 'RQ3':
   st.title("RQ3: Does a country's cellphone usage relate to its education outcomes?")
