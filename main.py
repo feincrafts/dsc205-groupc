@@ -106,7 +106,6 @@ def convert_count(value):
   else:
     return float(value)
   
-#need to convert the values
 pop.update(pop.drop(columns='country').map(convert_count))
 
 cellphones = pd.read_csv('./datasets/cell_phones_per_100_people.csv')
@@ -277,6 +276,7 @@ elif page_select == 'RQ2':
           yaxis_title='GDP'
       )
     st.plotly_chart(fig, y='gdp')
+    st.write("This graph seeks to illustrate the start of the shift from a logarithmic to a linear relationship over time, perhaps as the digital divide narrows.")
 
   with tab1:
     selected_tab = "General Scatterplot"
@@ -392,6 +392,7 @@ elif page_select == 'RQ2':
             yaxis_title='GDP'
         )
       st.plotly_chart(fig, y='gdp')
+    st.write("This graph seeks to illustrate the development of a relationship over time. This animation shows that the relationship appears to develop from almost logarithmic to linear (at around year 2010).")
 
   with tab2:
     #added selected tab for performance reasons but not sure if it works
@@ -422,7 +423,7 @@ elif page_select == 'RQ2':
       countrylist = country_select.copy()
       if len(countrylist) == 1 and ('All Countries' in countrylist):
         fig = px.scatter(merged_currYear, x="gdp", y="usage", size="pop",
-          hover_name="country", log_x = True, title = "GDP vs Usage for Year " + str(currYear), size_max=60)
+          hover_name="country", log_x = True, title = "GDP vs Internet Usage for Year " + str(currYear), size_max=60)
       else:
         allCountry = False
         if ('All Countries' in countrylist and len(countrylist) > 1):
@@ -477,6 +478,7 @@ elif page_select == 'RQ2':
         )
 
       st.plotly_chart(fig)
+    st.write("This graph seeks to illustrate how GDP and Internet Usage relate over time by reversing the axis and with respect to population size in order to investigate any potential relationships.")
 
 elif page_select == 'RQ3':
   st.title("RQ3: Does a country's cellphone usage relate to its education outcomes?")
@@ -512,6 +514,7 @@ elif page_select == 'RQ3':
       ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
     st.pyplot(fig)
+    st.write("This graph illustrates the start of the shift from an exponential to linear relationship when comparing cellphone usage to mean years of schooling for men ages 25 or older across the globe.")
 
   with tab1:
     if animToggle:
@@ -580,6 +583,7 @@ elif page_select == 'RQ3':
         ax.scatter(x=highlight['years_of_schooling'], y=highlight['cellphones_per_100k'], color='orange', s=75, label='Selected country/countries')
         ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
       st.pyplot(fig)
+    st.write("This graph illustrates the development of the relationship between mean years of schooling for men 25 or older across the globe and cellphone usage, over time.")
 
 elif page_select == 'RQ4':
   st.title("RQ4: TODO crime rates")
