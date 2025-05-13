@@ -6,3 +6,5 @@ numpy
 folium
 streamlit_folium
 seaborn
+shapely
+geopandas
