@@ -599,7 +599,7 @@ elif page_select == 'Cellphone Usage and Education':
 elif page_select == 'Correlation':
   st.title("RQ5: Correlation Matrix")
   st.image("./CorrMatrix.png")
-  st.write("This image illustrates the potential correlation between various factors on each other.")
+  st.write("This image illustrates the potential correlation between various factors on each other. CO2 emissions seems to correlate most strongly with GDP, life expectancy, household income, and internet usage. Internet usage also correlated with GDP, life expectancy, and years of education.")
 elif page_select == 'Energy Consumption':
 
   country_select = False
